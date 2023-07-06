@@ -4,6 +4,10 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const userRoutes = require('./routes/user');
 const authRoutes = require('./routes/auth');
+const productRoutes = require('./routes/product');
+const typeRoutes = require('./routes/types');
+const replacementRoutes = require('./routes/replacement');
+const requestRoutes = require('./routes/request');
 
 // Configurar o servidor Express
 const app = express();
@@ -31,3 +35,7 @@ mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 // Configurar as rotas
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
+app.use('/product', productRoutes);
+app.use('/type', typeRoutes);
+app.use('/replacement', replacementRoutes);
+app.use('/request', requestRoutes);
