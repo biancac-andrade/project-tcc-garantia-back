@@ -1,0 +1,102 @@
+const Product = require('../models/product');
+
+exports.getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find().populate('type');
+   res.json(products);
+  } catch (error) {
+    console.error('Erro ao obter todos os produtos:', error);
+    res.status(500).json({ error: 'Erro ao obter todos os produtos' });
+  }
+};
+
+exports.getProductById = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: 'Produto não encontrado' });
+    }
+    res.json(product);
+  } catch (error) {
+    console.error('Erro ao obter o produto por ID:', error);
+    res.status(500).json({ error: 'Erro ao obter o produto por ID' });
+  }
+};
+
+exports.createProduct = async (req, res) => {
+  try {
+  /*   const { product_name, description, image, quantity, type } = req.body;
+
+    const newProduct = new Product({
+      product_name,
+      description,
+      image,
+      quantity,
+      type
+    });
+
+    await newProduct.save(); */
+
+    const products = req.body; // Obter a matriz de produtos do corpo da requisição
+
+    // Iterar sobre cada produto e salvar no banco de dados
+    for (const productData of products) {
+      const { product_name, description, image, quantity, type } = productData;
+
+      const newProduct = new Product({
+        product_name,
+        description,
+        image,
+        quantity,
+        type
+      });
+
+      await newProduct.save();
+    }
+
+
+    res.status(201).json({ message: 'Produto criado com sucesso' });
+  } catch (error) {
+    console.error('Erro ao criar o produto:', error);
+    res.status(500).json({ error: 'Erro ao criar o produto' });
+  }
+};
+
+exports.updateProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const { product_name, description, image, quantity, type } = req.body;
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: 'Produto não encontrado' });
+    }
+
+    product.product_name = product_name || product.product_name;
+    product.description = description || product.description;
+    product.image = image || product.image;
+    product.quantity = quantity || product.quantity;
+    product.type = type || product.type;
+
+    await product.save();
+
+    res.json({ message: 'Produto atualizado com sucesso' });
+  } catch (error) {
+    console.error('Erro ao atualizar o produto:', error);
+    res.status(500).json({ error: 'Erro ao atualizar o produto' });
+  }
+};
+
+exports.deleteProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+
+    await Product.findByIdAndDelete(productId);
+
+    res.json({ message: 'Produto excluído com sucesso' });
+  } catch (error) {
+    console.error('Erro ao excluir o produto:', error);
+    res.status(500).json({ error: 'Erro ao excluir o produto' });
+  }
+};
