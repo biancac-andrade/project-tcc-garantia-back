@@ -13,7 +13,7 @@ exports.getAllRequests = async (req, res) => {
 exports.getRequestById = async (req, res) => {
   try {
     const requestId = req.params.id;
-    console.log(requestId)
+     console.log(requestId)
     const request = await Request.findById(requestId).populate('product');/*  */
     if (!request) {
       return res.status(404).json({ error: 'Solicitação não encontrada' });
@@ -81,5 +81,26 @@ exports.deleteRequest = async (req, res) => {
   } catch (error) {
     console.error('Erro ao excluir a solicitação:', error);
     res.status(500).json({ error: 'Erro ao excluir a solicitação' });
+  }
+};
+
+exports.deleteProductFromRequest = async (req, res) => {
+  try {
+    const requestId = req.params.requestId;
+    const productId = req.params.productId;
+
+    const request = await Request.findById(requestId);
+    if (!request) {
+      return res.status(404).json({ error: 'Solicitação não encontrada' });
+    }
+
+    // Remove o produto da lista de produtos da solicitação
+    request.product = request.product.filter((product) => product.toString() !== productId);
+    await request.save();
+
+    res.json({ message: 'Produto removido da solicitação com sucesso' });
+  } catch (error) {
+    console.error('Erro ao remover o produto da solicitação:', error);
+    res.status(500).json({ error: 'Erro ao remover o produto da solicitação' });
   }
 };
