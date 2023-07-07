@@ -1,9 +1,31 @@
 const Product = require('../models/product');
 
 exports.getAllProducts = async (req, res) => {
+  
   try {
-    const products = await Product.find().populate('type');
-   res.json(products);
+  //   const products = await Product.find().populate('type');
+  //  res.json(products);
+    
+  const { page = 1, limit = 10 } = req.query;
+
+  const options = {
+    page: parseInt(page),
+    limit: parseInt(limit),
+    populate: 'type', // Popula o campo 'type' com os dados do tipo de produto
+  };
+
+  // const products = await Product.paginate({}, options);
+
+  // res.json(products);
+    
+  const result = await Product.paginate({}, options);
+
+  res.json({
+    products: result.docs,
+    totalItems: result.totalDocs,
+    totalPages: result.totalPages,
+    currentPage: result.page,
+  });
   } catch (error) {
     console.error('Erro ao obter todos os produtos:', error);
     res.status(500).json({ error: 'Erro ao obter todos os produtos' });
