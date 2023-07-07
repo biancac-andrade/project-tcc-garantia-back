@@ -2,7 +2,7 @@ const Request = require('../models/request');
 
 exports.getAllRequests = async (req, res) => {
   try {
-    const requests = await Request.find();
+    const requests = await Request.find().populate('product');
     res.json(requests);
   } catch (error) {
     console.error('Erro ao obter todas as solicitações:', error);
@@ -13,7 +13,8 @@ exports.getAllRequests = async (req, res) => {
 exports.getRequestById = async (req, res) => {
   try {
     const requestId = req.params.id;
-    const request = await Request.findById(requestId);
+    console.log(requestId)
+    const request = await Request.findById(requestId).populate('product');/*  */
     if (!request) {
       return res.status(404).json({ error: 'Solicitação não encontrada' });
     }
@@ -34,9 +35,13 @@ exports.createRequest = async (req, res) => {
       product
     });
 
-    await newRequest.save();
+   /*  await newRequest.save();
 
-    res.status(201).json({ message: 'Solicitação criada com sucesso' });
+    res.status(201).json({ message: 'Solicitação criada com sucesso' }); */
+
+    const createdRequest = await newRequest.save();
+
+    res.status(201).json({ message: 'Solicitação criada com sucesso', request: createdRequest });
   } catch (error) {
     console.error('Erro ao criar a solicitação:', error);
     res.status(500).json({ error: 'Erro ao criar a solicitação' });
