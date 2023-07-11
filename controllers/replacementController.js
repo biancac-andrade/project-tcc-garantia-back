@@ -2,7 +2,13 @@ const Replacement = require('../models/replacement');
 
 exports.getAllReplacements = async (req, res) => {
   try {
-    const replacements = await Replacement.find().populate('product').populate('request');
+    const replacements = await Replacement.find().populate({
+      path: 'request',
+      populate: {
+        path: 'product',
+        select: 'product_name description image quantity type'
+      }
+    });
     res.json(replacements);
   } catch (error) {
     console.error('Erro ao obter todas as substituições:', error);
@@ -13,7 +19,13 @@ exports.getAllReplacements = async (req, res) => {
 exports.getReplacementById = async (req, res) => {
   try {
     const replacementId = req.params.id;
-    const replacement = await Replacement.findById(replacementId).populate('product').populate('request');
+    const replacement = await Replacement.findById(replacementId).populate({
+      path: 'request',
+      populate: {
+        path: 'product',
+        select: 'product_name description image quantity type'
+      }
+    });
     if (!replacement) {
       return res.status(404).json({ error: 'Substituição não encontrada' });
     }
@@ -26,18 +38,17 @@ exports.getReplacementById = async (req, res) => {
 
 exports.createReplacement = async (req, res) => {
   try {
-    const { replace_date, product_id, request_id, status } = req.body;
+    const { replace_date, status, request } = req.body;
 
     const newReplacement = new Replacement({
       replace_date,
-      product_id,
-      request_id,
-      status
+      status,
+      request
     });
 
-    await newReplacement.save();
+    const createReplace = await newReplacement.save();
 
-    res.status(201).json({ message: 'Substituição criada com sucesso' });
+    res.status(201).json({ message: 'Reposicao criada com sucesso',  replacement: createReplace });
   } catch (error) {
     console.error('Erro ao criar a substituição:', error);
     res.status(500).json({ error: 'Erro ao criar a substituição' });
