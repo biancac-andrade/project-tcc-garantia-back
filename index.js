@@ -8,6 +8,7 @@ const productRoutes = require('./routes/product');
 const typeRoutes = require('./routes/types');
 const replacementRoutes = require('./routes/replacement');
 const requestRoutes = require('./routes/request');
+const statusRoutes = require('./routes/status');
 
 // Configurar o servidor Express
 const app = express();
@@ -39,3 +40,4 @@ app.use('/product', productRoutes);
 app.use('/type', typeRoutes);
 app.use('/replacement', replacementRoutes);
 app.use('/request', requestRoutes);
+app.use('/status', statusRoutes);
