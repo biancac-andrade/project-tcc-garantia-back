@@ -48,7 +48,7 @@ exports.getProductById = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   try {
-  /*   const { product_name, description, image, quantity, type } = req.body;
+  /*  const { product_name, description, image, quantity, type } = req.body;
 
     const newProduct = new Product({
       product_name,
@@ -59,8 +59,10 @@ exports.createProduct = async (req, res) => {
     });
 
     await newProduct.save(); */
+    // logica para aceitar varios objetos, porém dá erro para formulário enviar nesse formato,
+    // então voltar modo antigo para que isso consiga
 
-    const products = req.body; // Obter a matriz de produtos do corpo da requisição
+   /*  const products = req.body; // Obter a matriz de produtos do corpo da requisição
 
     // Iterar sobre cada produto e salvar no banco de dados
     for (const productData of products) {
@@ -76,9 +78,15 @@ exports.createProduct = async (req, res) => {
 
       await newProduct.save();
     }
+ */
+    
+ const productData = req.body; // Obter o objeto de produto do corpo da requisição
 
+    const newProduct = new Product(productData);
 
-    res.status(201).json({ message: 'Produto criado com sucesso' });
+    await newProduct.save();
+
+    res.status(201).json({ message: 'Produto criado com sucesso' }); 
   } catch (error) {
     console.error('Erro ao criar o produto:', error);
     res.status(500).json({ error: 'Erro ao criar o produto' });
