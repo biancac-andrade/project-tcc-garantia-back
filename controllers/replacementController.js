@@ -2,7 +2,7 @@ const Replacement = require('../models/replacement');
 
 exports.getAllReplacements = async (req, res) => {
   try {
-    const replacements = await Replacement.find();
+    const replacements = await Replacement.find().populate('product').populate('request');
     res.json(replacements);
   } catch (error) {
     console.error('Erro ao obter todas as substituições:', error);
@@ -13,7 +13,7 @@ exports.getAllReplacements = async (req, res) => {
 exports.getReplacementById = async (req, res) => {
   try {
     const replacementId = req.params.id;
-    const replacement = await Replacement.findById(replacementId);
+    const replacement = await Replacement.findById(replacementId).populate('product').populate('request');
     if (!replacement) {
       return res.status(404).json({ error: 'Substituição não encontrada' });
     }
@@ -26,11 +26,13 @@ exports.getReplacementById = async (req, res) => {
 
 exports.createReplacement = async (req, res) => {
   try {
-    const { replace_date, product } = req.body;
+    const { replace_date, product_id, request_id, status } = req.body;
 
     const newReplacement = new Replacement({
       replace_date,
-      product
+      product_id,
+      request_id,
+      status
     });
 
     await newReplacement.save();
@@ -45,7 +47,7 @@ exports.createReplacement = async (req, res) => {
 exports.updateReplacement = async (req, res) => {
   try {
     const replacementId = req.params.id;
-    const { replace_date, product } = req.body;
+    const { replace_date, product_id, request_id, status } = req.body;
 
     const replacement = await Replacement.findById(replacementId);
     if (!replacement) {
@@ -53,7 +55,9 @@ exports.updateReplacement = async (req, res) => {
     }
 
     replacement.replace_date = replace_date || replacement.replace_date;
-    replacement.product = product || replacement.product;
+    replacement.product_id = product_id || replacement.product_id;
+    replacement.request_id = request_id || replacement.request_id;
+    replacement.status = status || replacement.status;
 
     await replacement.save();
 
