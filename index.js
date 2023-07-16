@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/product');
 const typeRoutes = require('./routes/types');
 const replacementRoutes = require('./routes/replacement');
+const pendingRoutes = require('./routes/pending');
 const requestRoutes = require('./routes/request');
 const statusRoutes = require('./routes/status');
 
@@ -39,5 +40,6 @@ app.use('/user', userRoutes);
 app.use('/product', productRoutes);
 app.use('/type', typeRoutes);
 app.use('/replacement', replacementRoutes);
+app.use('/pending', pendingRoutes);
 app.use('/request', requestRoutes);
 app.use('/status', statusRoutes);
