@@ -8,7 +8,8 @@ exports.getAllReplacements = async (req, res) => {
         path: 'product',
         select: 'product_name description image quantity type'
       }
-    });
+    }).populate('status', 'status_type');
+    
     res.json(replacements);
   } catch (error) {
     console.error('Erro ao obter todas as substituições:', error);
@@ -25,7 +26,8 @@ exports.getReplacementById = async (req, res) => {
         path: 'product',
         select: 'product_name description image quantity type'
       }
-    });
+    }).populate('status', 'status_type');
+
     if (!replacement) {
       return res.status(404).json({ error: 'Substituição não encontrada' });
     }
@@ -42,7 +44,7 @@ exports.createReplacement = async (req, res) => {
 
     const newReplacement = new Replacement({
       replace_date,
-      status,
+      status: status,
       request
     });
 

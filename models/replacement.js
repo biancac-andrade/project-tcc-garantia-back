@@ -4,7 +4,7 @@ const momentTz = require('moment-timezone');
 const replacementSchema = new mongoose.Schema({
   replace_date: { type: Date, required: true },
   request: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Request' }],
-  status: { type: String, required: true }
+  status: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Status' }]
 });
 
 // Antes de salvar, ajuste o formato da data para o horário de Brasília
