@@ -2,7 +2,7 @@ const Status = require('../models/status');
 
 exports.getAllStatuses = async (req, res) => {
   try {
-    const statuses = await Status.find().populate('replace_id');
+    const statuses = await Status.find();
     res.json(statuses);
   } catch (error) {
     console.error('Erro ao obter todos os status:', error);
@@ -26,11 +26,10 @@ exports.getStatusById = async (req, res) => {
 
 exports.createStatus = async (req, res) => {
   try {
-    const { status_type, replace_id } = req.body;
+    const { status_type } = req.body;
 
     const newStatus = new Status({
       status_type,
-      replace_id
     });
 
     await newStatus.save();
@@ -53,7 +52,6 @@ exports.updateStatus = async (req, res) => {
     }
 
     status.status_type = status_type || status.status_type;
-    status.replace_id = replace_id || status.replace_id;
 
     await status.save();
 
