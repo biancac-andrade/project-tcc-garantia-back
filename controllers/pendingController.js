@@ -81,6 +81,28 @@ exports.updatePending = async (req, res) => {
   }
 };
 
+exports.updatePendingStatus = async (req, res) => {
+  try {
+    const pendingId = req.params.id;
+    const { status } = req.body;
+
+    const pending = await Pending.findById(pendingId);
+    if (!pending) {
+      return res.status(404).json({ error: 'Pendente não encontrado' });
+    }
+
+    pending.status = status || pending.status;
+
+    await pending.save();
+
+    res.json({ message: 'Status do pendente atualizado com sucesso' });
+  } catch (error) {
+    console.error('Erro ao atualizar o status do pendente:', error);
+    res.status(500).json({ error: 'Erro ao atualizar o status do pendente' });
+  }
+};
+
+
 exports.deletePending = async (req, res) => {
   try {
     const pendingId = req.params.id;
