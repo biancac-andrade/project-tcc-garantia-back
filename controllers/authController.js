@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 // Registro de usuário
-exports.registerUser = async (req, res) => {
+ exports.registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
@@ -32,7 +32,7 @@ exports.registerUser = async (req, res) => {
 };
 
 // Autenticação de usuário
-exports.loginUser = async (req, res) => {
+ exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -48,20 +48,25 @@ exports.loginUser = async (req, res) => {
 
     console.log('Tipo de usuário:', user.role); // Adicione este console.log para verificar o tipo de usuário
 
-    //const token = generateAuthToken(user);
+    const token = generateAuthToken(user);
 
       // Gerar um token para o usuário autenticado
-      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+     // const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  
 
     res.json({ token });
   } catch (error) {
     console.error('Erro na autenticação do usuário:', error);
     res.status(500).json({ error: 'Erro na autenticação do usuário' });
   }
-};
+}; 
 
 // Função auxiliar para gerar o token de autenticação
 const generateAuthToken = (user) => {
-  const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign(
+    { userId: user._id, role: user.role }, // Incluir o campo "role" no objeto de dados a serem assinados
+    process.env.JWT_SECRET,
+    { expiresIn: '1h' }
+  );
   return token;
 };

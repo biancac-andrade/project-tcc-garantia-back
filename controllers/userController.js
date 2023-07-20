@@ -53,3 +53,41 @@ exports.updateUser = async (req, res) => {
     res.status(500).json({ error: 'Erro ao atualizar dados do usuário' });
   }
 };
+
+
+// Obter todos os usuários (Somente para usuários com role: 'admin')
+exports.getAllUsers = async (req, res) => {
+  try {
+   
+    // Obter a lista de todos os usuários
+    const users = await User.find();
+
+    res.json(users);
+  } catch (error) {
+    console.error('Erro ao obter a lista de usuários:', error);
+    res.status(500).json({ error: 'Erro ao obter a lista de usuários' });
+  }
+};
+
+
+// Excluir outro usuário (Somente para usuários com role: 'admin')
+exports.deleteOtherUser = async (req, res) => {
+  try {
+    console.log('Requesting user:', req.user);
+
+    const userId = req.params.id;
+
+    // Verificar se o usuário a ser deletado existe no banco de dados
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    await User.findByIdAndDelete(userId);
+
+    res.json({ message: 'Usuário excluído com sucesso' });
+  } catch (error) {
+    console.error('Erro ao excluir o usuário:', error);
+    res.status(500).json({ error: 'Erro ao excluir o usuário' });
+  }
+};
