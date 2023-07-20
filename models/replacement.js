@@ -3,7 +3,7 @@ const momentTz = require('moment-timezone');
 
 const replacementSchema = new mongoose.Schema({
   replace_date: { type: Date, required: true },
-  request: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Request' }],
+  pending: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pending' }],
   status: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Status' }]
 });
 

@@ -3,11 +3,14 @@ const Replacement = require('../models/replacement');
 exports.getAllReplacements = async (req, res) => {
   try {
     const replacements = await Replacement.find().populate({
-      path: 'request',
+      path: 'pending', // Adicione o campo 'pending' para o populate
       populate: {
-        path: 'product',
-        select: 'product_name description image quantity type'
-      }
+        path: 'request',
+        populate: {
+          path: 'product',
+          select: 'product_name description image quantity type',
+        },
+      },
     }).populate('status', 'status_type');
     
     res.json(replacements);
@@ -21,11 +24,14 @@ exports.getReplacementById = async (req, res) => {
   try {
     const replacementId = req.params.id;
     const replacement = await Replacement.findById(replacementId).populate({
-      path: 'request',
+      path: 'pending', // Adicione o campo 'pending' para o populate
       populate: {
-        path: 'product',
-        select: 'product_name description image quantity type'
-      }
+        path: 'request',
+        populate: {
+          path: 'product',
+          select: 'product_name description image quantity type',
+        },
+      },
     }).populate('status', 'status_type');
 
     if (!replacement) {
@@ -40,12 +46,13 @@ exports.getReplacementById = async (req, res) => {
 
 exports.createReplacement = async (req, res) => {
   try {
-    const { replace_date, status, request } = req.body;
+    const { replace_date, status, pending } = req.body;
 
+     
     const newReplacement = new Replacement({
       replace_date,
       status: status,
-      request
+      pending
     });
 
     const createReplace = await newReplacement.save();
