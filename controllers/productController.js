@@ -35,7 +35,7 @@ exports.getAllProducts = async (req, res) => {
 exports.getProductById = async (req, res) => {
   try {
     const productId = req.params.id;
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).populate('type');
     if (!product) {
       return res.status(404).json({ error: 'Produto não encontrado' });
     }
@@ -128,5 +128,16 @@ exports.deleteProduct = async (req, res) => {
   } catch (error) {
     console.error('Erro ao excluir o produto:', error);
     res.status(500).json({ error: 'Erro ao excluir o produto' });
+  }
+};
+
+exports.deleteAllProducts = async (req, res) => {
+  try {
+    await Product.deleteMany({});
+
+    res.json({ message: 'Todos os produtos foram excluídos com sucesso' });
+  } catch (error) {
+    console.error('Erro ao excluir todos os produtos:', error);
+    res.status(500).json({ error: 'Erro ao excluir todos os produtos' });
   }
 };
