@@ -4,10 +4,20 @@ exports.getAllPendings = async (req, res) => {
   try {
     const pendings = await Pending.find().populate({
       path: 'request',
-      populate: {
-        path: 'product',
-        select: 'product_name description image quantity type'
-      }
+      populate: [
+        {
+          path: 'product',
+          select: 'product_name description image quantity',
+          populate: {
+            path: 'type',
+            select: 'name_type',
+          },
+        },
+        {
+          path: 'status',
+          select: 'status_type',
+        },
+      ],      
     }).populate('status', 'status_type');
     
     res.json(pendings);
@@ -22,10 +32,20 @@ exports.getPendingById = async (req, res) => {
     const pendingId = req.params.id;
     const pending = await Pending.findById(pendingId).populate({
       path: 'request',
-      populate: {
-        path: 'product',
-        select: 'product_name description image quantity type'
-      }
+      populate: [
+        {
+          path: 'product',
+          select: 'product_name description image quantity',
+          populate: {
+            path: 'type',
+            select: 'name_type',
+          },
+        },
+        {
+          path: 'status',
+          select: 'status_type',
+        },
+      ],      
     }).populate('status', 'status_type');
 
     if (!pending) {
@@ -113,5 +133,18 @@ exports.deletePending = async (req, res) => {
   } catch (error) {
     console.error('Erro ao excluir o pendente:', error);
     res.status(500).json({ error: 'Erro ao excluir o pendente' });
+  }
+};
+
+
+exports.deleteAllPending = async (req, res) => {
+  try {
+    // Delete all documents from the 'Pending' collection
+    await Pending.deleteMany({});
+
+    res.json({ message: 'Todos os pendentes foram excluídos com sucesso' });
+  } catch (error) {
+    console.error('Erro ao excluir todos os pendentes:', error);
+    res.status(500).json({ error: 'Erro ao excluir todos os pendentes' });
   }
 };

@@ -4,7 +4,9 @@ const momentTz = require('moment-timezone');
 const requestSchema = new mongoose.Schema({
   request_date: { type: Date, required: true },
   quantity: { type: Number, required: true },
-  product: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }]
+  product: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+  status: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Status' }]
+
 });
 
 // Antes de salvar, ajuste o formato da data para o horário de Brasília

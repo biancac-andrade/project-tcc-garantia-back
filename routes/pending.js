@@ -9,5 +9,6 @@ router.post('/', pendingController.createPending);
 router.put('/:id', pendingController.updatePending);
 router.put('/status/:id', pendingController.updatePendingStatus);
 router.delete('/:id', pendingController.deletePending);
+router.delete('/', pendingController.deleteAllPending);
 
 module.exports = router;
