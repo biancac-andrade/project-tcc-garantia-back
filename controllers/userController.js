@@ -55,7 +55,6 @@ exports.updateUser = async (req, res) => {
 };
 
 
-// Obter todos os usuários (Somente para usuários com role: 'admin')
 exports.getAllUsers = async (req, res) => {
   try {
    
@@ -70,14 +69,12 @@ exports.getAllUsers = async (req, res) => {
 };
 
 
-// Excluir outro usuário (Somente para usuários com role: 'admin')
 exports.deleteOtherUser = async (req, res) => {
   try {
     console.log('Requesting user:', req.user);
 
     const userId = req.params.id;
 
-    // Verificar se o usuário a ser deletado existe no banco de dados
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: 'Usuário não encontrado' });
@@ -91,3 +88,4 @@ exports.deleteOtherUser = async (req, res) => {
     res.status(500).json({ error: 'Erro ao excluir o usuário' });
   }
 };
+
