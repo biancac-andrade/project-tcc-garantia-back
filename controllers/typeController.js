@@ -74,3 +74,15 @@ exports.deleteType = async (req, res) => {
     res.status(500).json({ error: 'Erro ao excluir o tipo' });
   }
 };
+
+exports.deleteAllTypes = async (req, res) => {
+  try {
+    // You can use the `deleteMany` function to delete all documents in the collection
+    await Type.deleteMany({});
+
+    res.json({ message: 'Todos os tipos foram excluídos com sucesso' });
+  } catch (error) {
+    console.error('Erro ao excluir todos os tipos:', error);
+    res.status(500).json({ error: 'Erro ao excluir todos os tipos' });
+  }
+};
