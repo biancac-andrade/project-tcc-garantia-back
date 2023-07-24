@@ -15,8 +15,13 @@ const statusRoutes = require('./routes/status');
 const app = express();
 
 // Configuração do CORS
-app.use(cors({
+/* app.use(cors({
   origin: 'http://localhost:3002', // Configurar a origem permitida
+})); */
+
+// Configuração do CORS
+app.use(cors({
+  origin: '*' // Permitir solicitações de qualquer origem
 }));
 
 app.use(express.json());
