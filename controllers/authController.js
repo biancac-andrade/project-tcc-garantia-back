@@ -61,6 +61,34 @@ const User = require('../models/user');
   }
 }; 
 
+
+// Função para verificar o token de autorização e retornar o role do usuário
+exports.checkAuthentication = (req, res) => {
+  try {
+    const authorizationHeader = req.header('Authorization');
+    if (!authorizationHeader) {
+      return res.status(401).json({ error: 'Token de autorização ausente' });
+    }
+
+    const token = authorizationHeader.replace('Bearer ', '');
+
+    // Verificar se o token é válido
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Recuperar o ID do usuário e o role do objeto `decoded`
+    const { userId, role } = decoded;
+
+    // Aqui você pode fazer outras verificações com base no role do usuário, se necessário
+
+    // Retornar os dados do perfil do usuário, incluindo o role
+    res.json({ userId, role });
+  } catch (error) {
+    console.error('Erro de autenticação:', error);
+    res.status(401).json({ error: 'Token de autorização inválido' });
+  }
+};
+
+
 // Função auxiliar para gerar o token de autenticação
 const generateAuthToken = (user) => {
   const token = jwt.sign(
