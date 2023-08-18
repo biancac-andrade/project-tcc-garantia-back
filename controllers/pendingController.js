@@ -1,8 +1,39 @@
 const Pending = require('../models/pending');
 
+function paginateResults(results, page, limit) {
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const paginatedResults = results.slice(startIndex, endIndex);
+  return paginatedResults;
+}
+
 exports.getAllPendings = async (req, res) => {
   try {
+    /*  const pendings = await Pending.find().populate({
+       
+       path: 'request',
+       populate: [
+         {
+           path: 'product',
+           select: 'product_name description image quantity',
+           populate: {
+             path: 'type',
+             select: 'name_type',
+           },
+         },
+         {
+           path: 'status',
+           select: 'status_type',
+         },
+       ],      
+     }).populate('status', 'status_type');
+     
+     res.json(pendings); */
+
+    const { page = 1, limit = 10 } = req.query;
+
     const pendings = await Pending.find().populate({
+       
       path: 'request',
       populate: [
         {
@@ -19,8 +50,11 @@ exports.getAllPendings = async (req, res) => {
         },
       ],      
     }).populate('status', 'status_type');
-    
-    res.json(pendings);
+
+
+    const paginatedPending = paginateResults(pendings, parseInt(page), parseInt(limit));
+
+    res.json(paginatedPending);
   } catch (error) {
     console.error('Erro ao obter todos os pendentes:', error);
     res.status(500).json({ error: 'Erro ao obter todos os pendentes' });

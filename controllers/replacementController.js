@@ -1,8 +1,15 @@
 const Replacement = require('../models/replacement');
 
+function paginateResults(results, page, limit) {
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const paginatedResults = results.slice(startIndex, endIndex);
+  return paginatedResults;
+}
+
 exports.getAllReplacements = async (req, res) => {
   try {
-    const replacements = await Replacement.find().populate({
+   /*  const replacements = await Replacement.find().populate({
       path: 'pending', 
       populate: [{
         path: 'request',
@@ -28,7 +35,39 @@ exports.getAllReplacements = async (req, res) => {
       ]
     }).populate('status', 'status_type');
     
-    res.json(replacements);
+    res.json(replacements); */
+
+    const { page = 1, limit = 10 } = req.query;
+
+    const replacements = await Replacement.find().populate({
+      path: 'pending', 
+      populate: [{
+        path: 'request',
+        populate: [
+          {
+            path: 'product',
+            select: 'product_name description image quantity',
+            populate: {
+              path: 'type',
+              select: 'name_type',
+            },
+          },
+          {
+            path: 'status',
+            select: 'status_type',
+          },
+        ], 
+      },
+      {
+        path: 'status',
+        select: 'status_type',
+        }
+      ]
+    }).populate('status', 'status_type');
+
+    const paginatedReplacements = paginateResults(replacements, parseInt(page), parseInt(limit));
+
+    res.json(paginatedReplacements);
   } catch (error) {
     console.error('Erro ao obter todas as substituições:', error);
     res.status(500).json({ error: 'Erro ao obter todas as substituições' });

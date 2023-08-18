@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const momentTz = require('moment-timezone');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const pendingSchema = new mongoose.Schema({
   pending_date: { type: Date, required: true },
@@ -7,7 +8,6 @@ const pendingSchema = new mongoose.Schema({
   status: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Status' }]
 });
 
-// Antes de salvar, ajuste o formato da data para o horário de Brasília
 pendingSchema.pre('save', function (next) {
   if (this.pending_date) {
     const brasiliaTimezone = 'America/Sao_Paulo';
@@ -17,4 +17,5 @@ pendingSchema.pre('save', function (next) {
   next();
 });
 
+pendingSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('Pending', pendingSchema);

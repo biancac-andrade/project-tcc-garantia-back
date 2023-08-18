@@ -1,6 +1,12 @@
 const User = require('../models/user');
 
-// Obter perfil do usuário
+function paginateResults(results, page, limit) {
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const paginatedResults = results.slice(startIndex, endIndex);
+  return paginatedResults;
+}
+
 exports.getUserProfile = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -10,14 +16,13 @@ exports.getUserProfile = async (req, res) => {
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
-     res.json(user.toObject()); // Retorna todos os dados do usuário
+     res.json(user.toObject()); 
   } catch (error) {
     console.error('Erro ao obter o perfil do usuário:', error);
     res.status(500).json({ error: 'Erro ao obter o perfil do usuário' });
   }
 };
 
-// Excluir usuário
 exports.deleteUser = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -31,7 +36,6 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-// Atualizar dados do usuário
 exports.updateUser = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -57,11 +61,15 @@ exports.updateUser = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
   try {
-   
-    // Obter a lista de todos os usuários
+    const { page = 1, limit = 10 } = req.query;
+
     const users = await User.find();
 
-    res.json(users);
+    const paginatedUsers = paginateResults(users, parseInt(page), parseInt(limit));
+
+    res.json(paginatedUsers);
+
+    //res.json(users);
   } catch (error) {
     console.error('Erro ao obter a lista de usuários:', error);
     res.status(500).json({ error: 'Erro ao obter a lista de usuários' });
