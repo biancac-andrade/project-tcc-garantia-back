@@ -54,7 +54,14 @@ exports.getAllPendings = async (req, res) => {
 
     const paginatedPending = paginateResults(pendings, parseInt(page), parseInt(limit));
 
-    res.json(paginatedPending);
+   // res.json(paginatedPending);
+
+    res.json({
+      pendings: paginatedPending,
+      totalItems: pendings.length,
+      totalPages: Math.ceil(pendings.length / limit),
+      currentPage: parseInt(page),
+    });
   } catch (error) {
     console.error('Erro ao obter todos os pendentes:', error);
     res.status(500).json({ error: 'Erro ao obter todos os pendentes' });

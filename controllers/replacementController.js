@@ -67,7 +67,16 @@ exports.getAllReplacements = async (req, res) => {
 
     const paginatedReplacements = paginateResults(replacements, parseInt(page), parseInt(limit));
 
-    res.json(paginatedReplacements);
+    //res.json(paginatedReplacements);
+    res.json({
+      replacements: paginatedReplacements,
+      totalItems: replacements.length,
+      totalPages: Math.ceil(replacements.length / limit),
+      currentPage: parseInt(page),
+    });
+
+    
+
   } catch (error) {
     console.error('Erro ao obter todas as substituições:', error);
     res.status(500).json({ error: 'Erro ao obter todas as substituições' });

@@ -63,11 +63,25 @@ exports.getAllUsers = async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;
 
-    const users = await User.find();
+   /*  const users = await User.find();
 
     const paginatedUsers = paginateResults(users, parseInt(page), parseInt(limit));
 
-    res.json(paginatedUsers);
+    res.json(paginatedUsers); */
+
+    const options = {
+      page: parseInt(page),
+      limit: parseInt(limit),
+    };
+
+    const result = await User.paginate({}, options);
+    res.json({
+      users: result.docs,
+      totalItems: result.totalDocs,
+      totalPages: result.totalPages,
+      currentPage: result.page,
+    });
+
 
     //res.json(users);
   } catch (error) {
