@@ -54,6 +54,30 @@ exports.createProduct = async (req, res) => {
   }
 };
 
+exports.createSeveralProduct = async (req, res) => {
+  try {
+    const productDataArray = req.body; 
+
+    const createdProducts = [];
+
+    for (const productData of productDataArray) {
+      const newProduct = new Product(productData);
+      const createdProduct = await newProduct.save();
+      createdProducts.push(createdProduct);
+    }
+
+    res
+      .status(201)
+      .json({
+        message: "Produtos criados com sucesso",
+        products: createdProducts,
+      });
+  } catch (error) {
+    console.error("Erro ao criar os produtos:", error);
+    res.status(500).json({ error: "Erro ao criar os produtos" });
+  }
+};
+
 exports.updateProduct = async (req, res) => {
   try {
     const productId = req.params.id;
