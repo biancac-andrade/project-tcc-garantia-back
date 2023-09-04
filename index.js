@@ -11,22 +11,14 @@ const pendingRoutes = require('./routes/pending');
 const requestRoutes = require('./routes/request');
 const statusRoutes = require('./routes/status');
 
-// Configurar o servidor Express
 const app = express();
 
-// Configuração do CORS
-/* app.use(cors({
-  origin: 'http://localhost:3002', // Configurar a origem permitida
-})); */
-
-// Configuração do CORS
 app.use(cors({
-  origin: '*' // Permitir solicitações de qualquer origem
+  origin: '*' 
 }));
 
 app.use(express.json());
 
-// Configurar a conexão com o MongoDB
 const MONGO_URI = process.env.MONGO_URI;
 mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
@@ -39,7 +31,6 @@ mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     console.error('Erro ao conectar ao MongoDB:', error);
   });
 
-// Configurar as rotas
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/product', productRoutes);

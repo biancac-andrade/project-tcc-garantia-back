@@ -9,7 +9,6 @@ const requestSchema = new mongoose.Schema({
 
 });
 
-// Antes de salvar, ajuste o formato da data para o horário de Brasília
 requestSchema.pre('save', function (next) {
   if (this.request_date) {
     const brasiliaTimezone = 'America/Sao_Paulo';

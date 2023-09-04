@@ -1,4 +1,4 @@
-const Pending = require('../models/pending');
+const Pending = require("../models/pending");
 
 function paginateResults(results, page, limit) {
   const startIndex = (page - 1) * limit;
@@ -9,52 +9,33 @@ function paginateResults(results, page, limit) {
 
 exports.getAllPendings = async (req, res) => {
   try {
-    /*  const pendings = await Pending.find().populate({
-       
-       path: 'request',
-       populate: [
-         {
-           path: 'product',
-           select: 'product_name description image quantity',
-           populate: {
-             path: 'type',
-             select: 'name_type',
-           },
-         },
-         {
-           path: 'status',
-           select: 'status_type',
-         },
-       ],      
-     }).populate('status', 'status_type');
-     
-     res.json(pendings); */
-
     const { page = 1, limit = 10 } = req.query;
 
-    const pendings = await Pending.find().populate({
-       
-      path: 'request',
-      populate: [
-        {
-          path: 'product',
-          select: 'product_name description image quantity',
-          populate: {
-            path: 'type',
-            select: 'name_type',
+    const pendings = await Pending.find()
+      .populate({
+        path: "request",
+        populate: [
+          {
+            path: "product",
+            select: "product_name description image quantity",
+            populate: {
+              path: "type",
+              select: "name_type",
+            },
           },
-        },
-        {
-          path: 'status',
-          select: 'status_type',
-        },
-      ],      
-    }).populate('status', 'status_type');
+          {
+            path: "status",
+            select: "status_type",
+          },
+        ],
+      })
+      .populate("status", "status_type");
 
-
-    const paginatedPending = paginateResults(pendings, parseInt(page), parseInt(limit));
-
-   // res.json(paginatedPending);
+    const paginatedPending = paginateResults(
+      pendings,
+      parseInt(page),
+      parseInt(limit)
+    );
 
     res.json({
       pendings: paginatedPending,
@@ -63,39 +44,41 @@ exports.getAllPendings = async (req, res) => {
       currentPage: parseInt(page),
     });
   } catch (error) {
-    console.error('Erro ao obter todos os pendentes:', error);
-    res.status(500).json({ error: 'Erro ao obter todos os pendentes' });
+    console.error("Erro ao obter todos os pendentes:", error);
+    res.status(500).json({ error: "Erro ao obter todos os pendentes" });
   }
 };
 
 exports.getPendingById = async (req, res) => {
   try {
     const pendingId = req.params.id;
-    const pending = await Pending.findById(pendingId).populate({
-      path: 'request',
-      populate: [
-        {
-          path: 'product',
-          select: 'product_name description image quantity',
-          populate: {
-            path: 'type',
-            select: 'name_type',
+    const pending = await Pending.findById(pendingId)
+      .populate({
+        path: "request",
+        populate: [
+          {
+            path: "product",
+            select: "product_name description image quantity",
+            populate: {
+              path: "type",
+              select: "name_type",
+            },
           },
-        },
-        {
-          path: 'status',
-          select: 'status_type',
-        },
-      ],      
-    }).populate('status', 'status_type');
+          {
+            path: "status",
+            select: "status_type",
+          },
+        ],
+      })
+      .populate("status", "status_type");
 
     if (!pending) {
-      return res.status(404).json({ error: 'Pendente não encontrado' });
+      return res.status(404).json({ error: "Pendente não encontrado" });
     }
     res.json(pending);
   } catch (error) {
-    console.error('Erro ao obter o pendente por ID:', error);
-    res.status(500).json({ error: 'Erro ao obter o pendente por ID' });
+    console.error("Erro ao obter o pendente por ID:", error);
+    res.status(500).json({ error: "Erro ao obter o pendente por ID" });
   }
 };
 
@@ -106,15 +89,20 @@ exports.createPending = async (req, res) => {
     const newPending = new Pending({
       pending_date,
       status: status,
-      request
+      request,
     });
 
     const createdPending = await newPending.save();
 
-    res.status(201).json({ message: 'Pendente criado com sucesso',  pending: createdPending });
+    res
+      .status(201)
+      .json({
+        message: "Pendente criado com sucesso",
+        pending: createdPending,
+      });
   } catch (error) {
-    console.error('Erro ao criar o pendente:', error);
-    res.status(500).json({ error: 'Erro ao criar o pendente' });
+    console.error("Erro ao criar o pendente:", error);
+    res.status(500).json({ error: "Erro ao criar o pendente" });
   }
 };
 
@@ -125,7 +113,7 @@ exports.updatePending = async (req, res) => {
 
     const pending = await Pending.findById(pendingId);
     if (!pending) {
-      return res.status(404).json({ error: 'Pendente não encontrado' });
+      return res.status(404).json({ error: "Pendente não encontrado" });
     }
 
     pending.pending_date = pending_date || pending.pending_date;
@@ -135,10 +123,10 @@ exports.updatePending = async (req, res) => {
 
     await pending.save();
 
-    res.json({ message: 'Pendente atualizado com sucesso' });
+    res.json({ message: "Pendente atualizado com sucesso" });
   } catch (error) {
-    console.error('Erro ao atualizar o pendente:', error);
-    res.status(500).json({ error: 'Erro ao atualizar o pendente' });
+    console.error("Erro ao atualizar o pendente:", error);
+    res.status(500).json({ error: "Erro ao atualizar o pendente" });
   }
 };
 
@@ -149,20 +137,19 @@ exports.updatePendingStatus = async (req, res) => {
 
     const pending = await Pending.findById(pendingId);
     if (!pending) {
-      return res.status(404).json({ error: 'Pendente não encontrado' });
+      return res.status(404).json({ error: "Pendente não encontrado" });
     }
 
     pending.status = status || pending.status;
 
     await pending.save();
 
-    res.json({ message: 'Status do pendente atualizado com sucesso' });
+    res.json({ message: "Status do pendente atualizado com sucesso" });
   } catch (error) {
-    console.error('Erro ao atualizar o status do pendente:', error);
-    res.status(500).json({ error: 'Erro ao atualizar o status do pendente' });
+    console.error("Erro ao atualizar o status do pendente:", error);
+    res.status(500).json({ error: "Erro ao atualizar o status do pendente" });
   }
 };
-
 
 exports.deletePending = async (req, res) => {
   try {
@@ -170,22 +157,20 @@ exports.deletePending = async (req, res) => {
 
     await Pending.findByIdAndDelete(pendingId);
 
-    res.json({ message: 'Pendente excluído com sucesso' });
+    res.json({ message: "Pendente excluído com sucesso" });
   } catch (error) {
-    console.error('Erro ao excluir o pendente:', error);
-    res.status(500).json({ error: 'Erro ao excluir o pendente' });
+    console.error("Erro ao excluir o pendente:", error);
+    res.status(500).json({ error: "Erro ao excluir o pendente" });
   }
 };
 
-
 exports.deleteAllPending = async (req, res) => {
   try {
-    // Delete all documents from the 'Pending' collection
     await Pending.deleteMany({});
 
-    res.json({ message: 'Todos os pendentes foram excluídos com sucesso' });
+    res.json({ message: "Todos os pendentes foram excluídos com sucesso" });
   } catch (error) {
-    console.error('Erro ao excluir todos os pendentes:', error);
-    res.status(500).json({ error: 'Erro ao excluir todos os pendentes' });
+    console.error("Erro ao excluir todos os pendentes:", error);
+    res.status(500).json({ error: "Erro ao excluir todos os pendentes" });
   }
 };

@@ -9,10 +9,8 @@ const authMiddleware = (req, res, next) => {
 
     const token = authorizationHeader.replace('Bearer ', '');
 
-    // Verificar se o token é válido
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Adicionar o ID do usuário ao objeto `req` para uso posterior nas rotas
     req.user = { userId: decoded.userId };
 
     next();
