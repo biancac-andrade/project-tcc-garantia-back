@@ -6,8 +6,8 @@ O projeto proposto é um sistema de gerenciamento de backend desenvolvido para e
 
 Antes de começar, certifique-se de ter instalado:
 
-- Node.js (versão x.x.x)
-- npm (versão x.x.x)
+- Node.js (versão 16.20.2)
+- npm (versão 8.19.4)
 - postman ou insommia
 - qualquer navegador
 
